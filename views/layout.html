@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{{.siteName}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+    <link rel="stylesheet" href="/static/layui/css/layui.css?v=0.1" media="all" />
+    <link rel="stylesheet" href="/static/css/okadmin.css?v=0.1" media="all">
+    <link rel="stylesheet" href="/static/css/common.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/layer/default/layer.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/laydate/default/laydate.css" media="all">
+</head>
+
+<body class="layui-layout-body">
+    <!-- 更换主体 Eg:orange_theme|blue_theme -->
+    <div class="layui-layout layui-layout-admin okadmin blue_theme">
+        <!--头部导航-->
+        <div class="layui-header okadmin-header">
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item">
+                    <a class="ok-menu ok-show-menu" href="javascript:" title="Menu Switching">
+                        <i class="layui-icon layui-icon-shrink-right"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item ok-input-search">
+                    <input type="text" placeholder="搜索..." class="layui-input layui-input-search" />
+                </li>
+                <li class="layui-nav-item">
+                    <a class="ok-refresh" href="javascript:" title="Refresh">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+                <li class="no-line layui-nav-item layui-hide-xs">
+                    <a id="notice" class="flex-vc pr10 pl10" href="javascript:">
+                        <i class="ok-icon ok-icon-notice icon-head-i" title="System Notice"></i>
+                        <span class="layui-badge-dot"></span>
+                        <cite></cite>
+                    </a>
+                </li>
+
+                <li class="no-line layui-nav-item layui-hide-xs">
+                    <a id="lock" class="flex-vc pr10 pl10" href="javascript:">
+                        <i class="ok-icon ok-icon-lock icon-head-i" title="Lock Screen"></i><cite></cite>
+                    </a>
+                </li>
+
+                <li class="layui-nav-item layui-hide-xs">
+                    <a id="fullScreen" class=" pr10 pl10" href="javascript:">
+                        <i class="layui-icon layui-icon-screen-full"></i>
+                    </a>
+                </li>
+
+                <li class="no-line layui-nav-item">
+                    <a href="javascript:">
+                        <img src="/static/img/logo.png" class="layui-nav-img">
+                        {{.userName}}
+                    </a>
+                    <dl id="userInfo" class="layui-nav-child">
+                        <dd><a lay-id="u-1" href="javascript:" data-url="pages/member/user.html">个人中心<span
+                                    class="layui-badge-dot"></span></a></dd>
+                        <dd><a lay-id="u-2" href="javascript:" data-url="pages/member/user-info.html">基本资料</a></dd>
+                        <dd><a lay-id="u-3" href="javascript:" data-url="pages/member/user-pwd.html">安全设置</a></dd>
+                        <dd><a lay-id="u-4" href="javascript:" id="alertSkin">皮肤动画</a></dd>
+                        <dd>
+                            <hr />
+                        </dd>
+                        <dd><a href="javascript:void(0)" id="logout">logout</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+        <!--遮罩层-->
+        <div class="ok-make"></div>
+        <!--左侧导航区域-->
+        <div class="layui-side layui-side-menu okadmin-bg-20222A ok-left">
+            <div class="layui-side-scroll okadmin-side">
+                <div class="okadmin-logo">Devices Management</div>
+                <div class="user-photo">
+                    <a class="img" title="我的头像">
+                        <img src="/static/img/logo.png" class="userAvatar">
+                    </a>
+                    <p>Hello, <span class="userName">{{.userName}}</span>, Wellcome.</p>
+                </div>
+                <!--左侧导航菜单-->
+                <ul id="navBar" class="layui-nav okadmin-nav okadmin-bg-20222A layui-nav-tree">
+                    <li class="layui-nav-item layui-this">
+                        <a href="javascript:" lay-id="1">
+                            <i is-close=false class="ok-icon">&#xe654;</i>
+                            Device Monitoring
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 内容主体区域 -->
+        <div class="content-body">
+            <div class="layui-tab ok-tab" lay-filter="ok-tab" lay-allowClose="true" lay-unauto>
+                <div data-id="left" id="okLeftMove"
+                    class="ok-icon ok-icon-back okadmin-tabs-control move-left okNavMove"></div>
+                <div data-id="right" id="okRightMove"
+                    class="ok-icon ok-icon-right okadmin-tabs-control move-right okNavMove"></div>
+                <div class="layui-icon okadmin-tabs-control ok-right-nav-menu" style="right: 0;">
+                    <ul class="okadmin-tab">
+                        <li class="no-line okadmin-tab-item">
+                            <div class="okadmin-link layui-icon-down" href="javascript:;"></div>
+                            <dl id="tabAction" class="okadmin-tab-child layui-anim-upbit layui-anim"
+                                style="text-align: left;">
+                                <dd><a data-num="1" href="javascript:"> Close the current tab page</a></dd>
+                                <dd><a data-num="2" href="javascript:"> Close other tab pages</a></dd>
+                                <dd><a data-num="3" href="javascript:"> Close all tab pages</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+
+                <ul id="tabTitle" class="layui-tab-title ok-tab-title not-scroll">
+                    <li class="layui-this" lay-id="1" tab="index">
+                        <i class="ok-icon">&#xe654;</i>
+                        <cite is-close=false>Device Monitoring</cite>
+                    </li>
+                </ul>
+
+                <div id="tabContent" class="layui-tab-content ok-tab-content">
+                    <div class="layui-tab-item layui-show" style="padding: 15px;">
+                        {{.LayoutContent}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--底部信息-->
+        <div class="layui-footer okadmin-text-center">
+            Copyright © BigBang Team 2020
+        </div>
+    </div>
+    <div class="yy"></div>
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/js/okadmin.js"></script>
+    <script type="text/javascript" src="/static/lib/echarts/echarts.common.min.js"></script>
+    <script type="text/javascript" src="/static/js/device/d.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.siteName}} - Login</title>
+    <link rel="stylesheet" href="/static/css/oksub.css" />
+</head>
+
+<body class="page-fill">
+    <div class="page-fill" id="login">
+        <form class="layui-form">
+            <div class="login_face"><img src="/static/img/logo.png"></div>
+            <div class="layui-form-item input-item">
+                <label for="username">UserName</label>
+                <input type="text" lay-verify="required|username" name="username"
+                    placeholder="Please enter the user name" autocomplete="off" id="username" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item">
+                <label for="password">Password</label>
+                <input type="password" lay-verify="required|password" name="password"
+                    placeholder="Please enter the password" autocomplete="off" id="password" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item captcha-box">
+                <label for="captcha">Verification code</label>
+                <input type="text" lay-verify="required|captcha" name="captcha"
+                    placeholder="Please enter the verification code" autocomplete="off" id="captcha" maxlength="4"
+                    class="layui-input">
+                <div class="img ok-none-select" id="captchaImg"></div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-block" lay-filter="login" lay-submit>LOGIN IN</button>
+            </div>
+            <div class="login-link">
+                <a href="register.html">Registe</a>
+                <a href="forget.html">Forgot password?</a>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script src="/static/layui/layui.js"></script>
+    <script>
+        layui.use(["form", "okGVerify", "okUtils", "okLayer"], function () {
+            let form = layui.form;
+            let $ = layui.jquery;
+            let okGVerify = layui.okGVerify;
+            let okUtils = layui.okUtils;
+            let okLayer = layui.okLayer;
+
+            /**
+             * 初始化验证码
+             */
+            let verifyCode = new okGVerify("#captchaImg");
+
+            /**
+             * 数据校验
+             */
+            form.verify({
+                username: function (value, item) {
+                    if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                        return 'User names do not contain special characters.';
+                    }
+                    if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                        return 'The first and last characters of the username can not be underlined \'_\'';
+                    }
+                    if (/^\d+\d+\d$/.test(value)) {
+                        return 'User names can not consist entirely of numbers.';
+                    }
+                },
+                password: [/^[\S]{6,12}$/, "Password must be 6 to 12 bits and no spaces."],
+                captcha: function (val) {
+                    if (verifyCode.validate(val) != "true") {
+                        return verifyCode.validate(val)
+                    }
+                }
+            });
+
+            /**
+             * 表单提交
+             */
+
+            form.on("submit(login)", function (data) {
+                $.post('/login/loginin', data.field, function (out) {
+                    if (out.status == 0) {
+                        window.location = "/index.html";
+                    } else {
+                        layer.msg(out.message);
+                    }
+
+                }, "json");
+                return false;
+            });
+
+
+            /**
+             * 表单input组件单击时
+             */
+            $("#login .input-item .layui-input").click(function (e) {
+                e.stopPropagation();
+                $(this).addClass("layui-input-focus").find(".layui-input").focus();
+            });
+
+            /**
+             * 表单input组件获取焦点时
+             */
+            $("#login .layui-form-item .layui-input").focus(function () {
+                $(this).parent().addClass("layui-input-focus");
+            });
+
+            /**
+             * 表单input组件失去焦点时
+             */
+            $("#login .layui-form-item .layui-input").blur(function () {
+                $(this).parent().removeClass("layui-input-focus");
+                if ($(this).val() != "") {
+                    $(this).parent().addClass("layui-input-active");
+                } else {
+                    $(this).parent().removeClass("layui-input-active");
+                }
+            })
+        });
+    </script>
+</body>
+
+</html>

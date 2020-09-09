@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+    <link rel="stylesheet" href="/static/css/common.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/layer/default/layer.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/laydate/default/laydate.css" media="all">
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/layui/lay/okmodules/okMock.js"></script>
+    <script type="text/javascript" src="/static/js/device/list.js"></script>
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--模糊搜索区域-->
+        <div class="layui-row" id="laySearch">
+            <form class="layui-form layui-col-md12 ok-search" action="" onsubmit="javascript:return false;">
+                <input class="layui-input" placeholder="Start Time" autocomplete="off" id="startTime" name="startTime">
+                <input class="layui-input" placeholder="End Time" autocomplete="off" id="endTime" name="endTime">
+                <input class="layui-input" placeholder="Device Name" autocomplete="off" id="deviceName"
+                    name="deviceName">
+                <button class="layui-btn" lay-submit="" lay-filter="search">
+                    <i class="layui-icon layui-icon-search"></i>
+                </button>
+            </form>
+        </div>
+        <!--数据表格-->
+        <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+    </div>
+
+    <!-- 头工具栏模板 -->
+    <script type="text/html" id="toolbarTpl">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">Add Device</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchDel">Delete Device</button>            
+        </div>
+    </script>
+
+    <!-- 行工具栏模板 -->
+    <script type="text/html" id="operationTpl">
+        <a href="javascript:" title="Choose Key" class="layui-btn layui-btn-xs" lay-event="chooseKey">Key</a>
+        <a href="javascript:" title="Choose Software"  class="layui-btn layui-btn-danger layui-btn-xs" lay-event="chooseSoftware">Software</a>
+        <a href="javascript:" title="Edit"  class="layui-btn layui-btn-xs layui-btn layui-btn-normal" lay-event="edit">Edit</a>
+        <a href="javascript:" title="Delete" class="layui-btn layui-btn layui-btn-warm layui-btn-xs" lay-event="del">Delete</a>
+    </script>
+
+</body>
+
+</html>

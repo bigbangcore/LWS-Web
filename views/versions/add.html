@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>add</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--form表单-->
+        <form class="layui-form layui-form-pane ok-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">Version Title</label>
+                <div class="layui-input-block">
+                    <input type="text" name="versionTitle" id="versionTitle"
+                        placeholder="Please enter the device version" autocomplete="off" class="layui-input"
+                        lay-verify="required">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Software URL</label>
+                <div class="layui-input-inline" style="width:50%;margin-right: 0;">
+                    <input type="text" name="versionURL" id="versionURL" lay-verify="required" autocomplete="off"
+                        class="layui-input">
+                </div>
+                <button type="button" class="layui-btn" style="border-radius:0;" id="btnUpload"><i
+                        class="layui-icon">&#xe67c;</i>Upload</button>
+            </div>
+
+            <!--
+            <div class="layui-form-item">
+                <label class="layui-form-label">Device Name</label>
+                <div class="layui-input-block">
+                    <select name="deviceID" id="deviceID" style="min-width: 300px;">
+                        <option value="">Choose Device Name,please.</option>
+                        {{range $index,$elem := .devLst}}
+                        <option value="{{$elem.ID}}"> {{$elem.DeviceName}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            -->
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">Describe</label>
+                <div class="layui-input-block">
+                    <textarea name="versionDes" id="versionDes" placeholder=" Please enter the content"
+                        class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-left: 0;">
+                    <input type="hidden" name="versionSize" id="versionSize" value="0">
+                    <button type="submit" class="layui-btn" lay-submit> Submit </button>
+                    <button type="reset" class="layui-btn layui-btn-primary"> Reset </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script>
+        var $, form;
+        layui.use(["form", "element", "layer", "jquery", "upload"], function () {
+            let form = layui.form;
+            $ = layui.jquery;
+            var layer = layui.layer;
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#btnUpload' //绑定元素
+                , url: '/versions/uploadfile' //上传接口
+                , accept: 'file'
+                , exts: 'zip|rar|7z|gz|tar|tar.gz' //只允许上传压缩文件
+                , done: function (res) {
+                    if (res.status === 0) {
+                        var da = res.message.split('|')
+                        $("#versionSize").val(da[1])
+                        $("#versionURL").val(da[0])
+                    }
+                }
+                , error: function () {
+                    //请求异常回调
+                }
+            });
+
+            $("form").submit(function () {
+                var versionTitle = $("#versionTitle").val();
+                var versionURL = $("#versionURL").val();
+                var versionSize = $("#versionSize").val();
+                var versionDes = $("#versionDes").val();
+
+                var data = {
+                    'versionTitle': versionTitle,
+                    'versionURL': versionURL,
+                    'versionSize': versionSize,
+                    'versionDes': versionDes
+                }
+                $.post('{{urlfor "VersionsController.AjaxSave"}}', data, function (out) {
+                    if (out.status == 0) {
+                        layer.alert('Add success!', { icon: 1 }, function (index) {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    } else {
+                        layer.msg(out.message);
+                    }
+
+                }, "json");
+                return false;
+            });
+
+            //form.render();
+        });
+    </script>
+</body>
+
+</html>

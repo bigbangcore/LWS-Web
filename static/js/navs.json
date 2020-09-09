@@ -1,0 +1,92 @@
+[
+    {
+        "title": "Device Monitoring",
+        "href": "/index",
+        "fontFamily": "ok-icon",
+        "icon": "&#xe654;",
+        "spread": true,
+        "isCheck": true
+    },
+    {
+        "title": "Device management",
+        "href": "",
+        "fontFamily": "layui-icon",
+        "icon": "&#xe630;",
+        "spread": false,
+        "children": [
+            {
+                "title": "Device List",
+                "href": "device/list",
+                "fontFamily": "layui-icon",
+                "icon": "&#xe62d;",
+                "spread": false
+            },
+            {
+                "title": "Keys",
+                "href": "keys/list",
+                "icon": "&#xe62d;",
+                "spread": false
+            },
+            {
+                "title": "Versions",
+                "href": "versions/list",
+                "icon": "&#xe62d;",
+                "spread": false
+            }
+        ]
+    },
+    {
+        "title": "User management",
+        "href": "",
+        "fontFamily": "layui-icon",
+        "icon": "&#xe770;",
+        "spread": false,
+        "children": [
+            {
+                "title": "User List",
+                "href": "member/users",
+                "icon": "&#xe62d;",
+                "spread": false
+            },
+            {
+                "title": "Group List",
+                "href": "member/groups",
+                "icon": "&#xe62d;",
+                "spread": false
+            },
+            {
+                "title": "Role List",
+                "href": "member/roles",
+                "icon": "&#xe62d;",
+                "spread": false
+            },
+            {
+                "title": "Permission List",
+                "href": "member/permissions",
+                "icon": "&#xe62d;",
+                "spread": false
+            }
+        ]
+    },
+    {
+        "title": "System Management",
+        "href": "",
+        "fontFamily": "layui-icon",
+        "icon": "&#xe614;",
+        "spread": false,
+        "children": [
+            {
+                "title": "System Set",
+                "href": "sys/setup",
+                "icon": "&#xe642;",
+                "spread": false
+            },
+            {
+                "title": "Logs",
+                "href": "sys/log",
+                "icon": "&#xe60a;",
+                "spread": false
+            }
+        ]
+    }
+]

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>versions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+    <link rel="stylesheet" href="/static/css/common.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/layer/default/layer.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/laydate/default/laydate.css" media="all">
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--模糊搜索区域-->
+        <div class="layui-row" id="laySearch">
+            <form class="layui-form layui-col-md12 ok-search" action="" onsubmit="javascript:return false;">
+                <input class="layui-input" placeholder="Start Time" autocomplete="off" id="startTime" name="startTime">
+                <input class="layui-input" placeholder="End Time" autocomplete="off" id="endTime" name="endTime">
+                <input class="layui-input" placeholder="Device Name" autocomplete="off" id="deviceName"
+                    name="deviceName">
+                <button class="layui-btn" lay-submit="" lay-filter="search">
+                    <i class="layui-icon layui-icon-search"></i>
+                </button>
+            </form>
+        </div>
+        <!--数据表格-->
+        <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+    </div>
+
+    <!-- 头工具栏模板 -->
+    <script type="text/html" id="toolbarTpl">
+        <div class="layui-btn-container">
+            <input type="hidden" id="versionId" value="{{.versionId}}">
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="push"> Start to Push </button>          
+        </div>
+    </script>
+
+    <script>
+        layui.use(["element", "table", "form", "laydate", "okLayer", "okUtils", "jquery"], function () {
+            let table = layui.table;
+            //let form = layui.form;
+            let util = layui.util;
+            let laydate = layui.laydate;
+            let okLayer = layui.okLayer;
+            let okUtils = layui.okUtils;
+            //let okMock = layui.okMock;
+            $ = layui.jquery;
+
+            util.fixbar({});
+
+            laydate.render({ elem: "#startTime", type: "datetime" });
+            laydate.render({ elem: "#endTime", type: "datetime" });
+
+            //方法级渲染
+            let deviceTable = table.render({
+                elem: '#tableId',
+                url: '/device/table',
+                limit: 20,
+                page: true,
+                even: true,
+                //id: 'listReload',// Can not set ID
+                toolbar: true,
+                toolbar: "#toolbarTpl",
+                //defaultToolbar: ['filter', 'print', 'exports'],
+                defaultToolbar: ['filter'],
+                size: "sm",
+                cols: [[
+                    { type: "checkbox", fixed: "left" },
+                    { field: "ID", title: "ID", width: 0 },
+                    { field: "DeviceID", title: "Device ID", width: 645 },
+                    { field: "DeviceName", title: "Device Name", width: 650 },
+                    { field: "DeviceStatus", title: "Status", width: 100 }
+                ]],
+                done: function (res, curr, count) {
+                    //console.log(res, curr, count)
+                    $(".layui-table-box").find("[data-field='ID']").css("display", "none");
+                }
+            });
+
+            $('#laySearch .layui-btn').on('click', function () {
+                table.reload('tableId', {
+                    where: {
+                        startTime: $('#startTime').val(),
+                        endTime: $('#endTime').val(),
+                        deviceName: $('#deviceName').val(),
+                    }
+                });
+            });
+
+            table.on("toolbar(tableFilter)", function (obj) {
+                switch (obj.event) {
+                    case "push":
+                        pushto();
+                        break;
+                }
+            });
+
+            function pushto() {
+                okLayer.confirm("Are you sure to bulk push?", function (index) {
+                    layer.close(index);
+                    var idsStr = okUtils.tableBatchCheck(table);
+                    var verId = $("#versionId").val()
+                    if (idsStr) {
+                        $.post('/versions/pushto', { idsStr: idsStr, id: verId }, function (out) {
+                            if (out.status == 0) {
+                                layer.alert('Push success.', { icon: 1 }, function (index) {
+                                    layer.close(index);
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(out.message)
+                            }
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        }, "json");
+                    }
+                });
+            }
+
+            $("form").submit(function () {
+                var deviceName = $("#deviceName").val();
+
+                var deviceID = $("#deviceID").val();
+                var deviceDes = $("#deviceDes").val();
+                var keyID = $("#keyID").val()
+                var versionID = $("#versionID").val()
+
+                var data = {
+                    'deviceName': deviceName,
+                    'deviceID': deviceID,
+                    'deviceStatus': deviceStatus,
+                    'deviceDes': deviceDes,
+                    'keyID': keyID,
+                    'versionID': versionID
+                }
+                $.post('{{urlfor "DeviceController.AjaxSave"}}', data, function (out) {
+                    if (out.status == 0) {
+                        layer.alert('Add success!', { icon: 1 }, function (index) {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    } else {
+                        layer.msg(out.message);
+                    }
+
+                }, "json");
+                return false;
+            });
+        });
+    </script>
+
+</body>
+
+</html>

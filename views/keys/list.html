@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>keys</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+    <link rel="stylesheet" href="/static/css/common.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/layer/default/layer.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/modules/laydate/default/laydate.css" media="all">
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/layui/lay/okmodules/okMock.js"></script>
+    <script type="text/javascript" src="/static/js/keys/list.js"></script>
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--模糊搜索区域-->
+        <div class="layui-row" id="laySearch">
+            <form class="layui-form layui-col-md12 ok-search" action="" onsubmit="javascript:return false;">
+                <button class="layui-btn" style="float: right;" lay-submit="" lay-filter="search">
+                    <i class="layui-icon layui-icon-search"></i>
+                </button>
+                <input class="layui-input" style="width: 50%;float: right;" placeholder="Public key or private key"
+                    autocomplete="off" id="searchKey" name="searchKey">
+            </form>
+        </div>
+        <!--数据表格-->
+        <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+    </div>
+
+    <!-- 头工具栏模板 -->
+    <script type="text/html" id="toolbarTpl">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">Add New Key</button>
+            <button class="layui-btn layui-btn-sm" lay-event="create">Create New Keys</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchDel">Delete Key</button>            
+        </div>
+    </script>
+
+    <!-- 行工具栏模板 -->
+    <script type="text/html" id="operationTpl">
+        <a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+        <a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Edit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--form表单-->
+        <form class="layui-form layui-form-pane ok-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">Device Name</label>
+                <div class="layui-input-block">
+                    <input type="text" name="deviceName" placeholder="Please enter the device name" autocomplete="off"
+                        class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Device ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="deviceID" placeholder="Please enter the device id" autocomplete="off"
+                        class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Device Status</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="deviceStatus" lay-skin="switch" lay-text="ON|OFF" value="0">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">Describe</label>
+                <div class="layui-input-block">
+                    <textarea name="deviceDes" placeholder=" Please enter the content"
+                        class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="addDevice">Submit</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+
+    <script>
+        var $, form;
+        layui.config({
+            base: "js/"
+        }).use(['form', 'element', 'layer', 'jquery'], function () {
+            form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            $ = layui.jquery;
+            // layer = layui.layer
+            $("form").submit(function () {
+                var role_name = $("#role_name").val();
+                if (!role_name) {
+                    layer.msg('请填写角色名称');
+                    return false;
+                }
+                var id = $("#id").val()
+                var detail = $("#detail").val();
+                var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                var nodes = treeObj.getCheckedNodes(true);
+                var nodes_data = nodes_select_data(nodes, {});
+                var data = { 'role_name': role_name, 'id': id, 'detail': detail, 'nodes_data': nodes_data }
+                console.log(data)
+                $.post('{{urlfor "RoleController.AjaxSave"}}', data, function (out) {
+                    if (out.status == 0) {
+                        layer.alert('保存成功了', { icon: 1 }, function (index) {
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(out.message)
+                    }
+                }, "json");
+                return false;
+            });
+
+            form.render();
+            //但是，如果你的HTML是动态生成的，自动渲染就会失效
+            //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+
+        }); 
+    </script>
+</body>
+
+</html>

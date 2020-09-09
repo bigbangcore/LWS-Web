@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>add</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css?v=0.1" media="all" />
+</head>
+
+<body>
+    <div class="ok-body">
+        <!--form表单-->
+        <form class="layui-form layui-form-pane ok-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">Count</label>
+                <div class="layui-input-block">
+                    <input type="text" name="keyCount" id="keyCount"
+                        placeholder="Enter the number of keys you want to generate" autocomplete="off"
+                        class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-left: 0;">
+                    <button class="layui-btn" lay-submit> Submit </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script>
+        var $, form;
+        layui.use(["form", "element", "layer", "jquery"], function () {
+            let form = layui.form;
+            $ = layui.jquery;
+
+            $("form").submit(function () {
+                var keyCount = $("#keyCount").val();
+                if (!keyCount) {
+                    layer.msg('Key count is null.');
+                    return false;
+                }
+
+                var data = {
+                    'keyCount': keyCount
+                }
+                $.post('{{urlfor "KeysController.AjaxCreateKey"}}', data, function (out) {
+                    if (out.status == 0) {
+                        layer.alert('Create success!', { icon: 1 }, function (index) {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    } else {
+                        layer.msg(out.message);
+                    }
+
+                }, "json");
+                return false;
+            });
+
+            //form.render();
+        });
+    </script>
+</body>
+
+</html>

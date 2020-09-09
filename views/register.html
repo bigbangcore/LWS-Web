@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.siteName}} - registe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/css/oksub.css" />
+    <style>
+        .register .tit {
+            padding-top: 15px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .register .code-box {
+            display: flex;
+        }
+
+        .register .code-box .btn-auth-code {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body class="page-fill">
+    <div class="page-fill register" id="login">
+        <form class="layui-form ">
+            <div class="layui-form-item tit">Register</div>
+            <div class="layui-form-item input-item">
+                <label for="username">User Name</label>
+                <input type="text" lay-verify="required|username" name="username"
+                    placeholder="Please enter the user name" autocomplete="off" id="username" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item">
+                <label for="password">Password</label>
+                <input type="password" lay-verify="required|password" name="password"
+                    placeholder="Please enter the password" autocomplete="off" id="password" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item">
+                <label for="comPassword">Re Password</label>
+                <input type="password" lay-verify="required|comPassword" name="comPassword"
+                    placeholder="Please confirm the password" autocomplete="off" id="comPassword" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item">
+                <label for="phone">Phone No.</label>
+                <input type="text" lay-verify="required|phone" name="text" placeholder="Please enter your phone No."
+                    autocomplete="off" id="phone" maxlength="11" class="layui-input">
+            </div>
+            <div class="layui-form-item input-item">
+                <label for="email">Email</label>
+                <input type="text" lay-verify="required|email" name="email" placeholder="Please enter your email"
+                    autocomplete="off" id="email" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-block" lay-filter="login" lay-submit> SUBMIT </button>
+            </div>
+            <div class="login-link">
+                <a href="login.html">If you have an account already , log in</a>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script src="/static/layui/layui.js"></script>
+    <script>
+        layui.use(["form", "okGVerify", "okLayer"], function () {
+            let form = layui.form;
+            let $ = layui.jquery;
+            let okGVerify = layui.okGVerify;
+            let okLayer = layui.okLayer;
+            let regPhone = /^[1][0-9]{10}$/;
+            let regEmail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+
+            /**
+             * 数据校验
+             */
+            form.verify({
+                username: function (value, item) {
+                    if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                        return 'User names do not contain special characters.';
+                    }
+                    if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                        return 'The first and last characters of the username can not be underlined \'_\'';
+                    }
+                    if (/^\d+\d+\d$/.test(value)) {
+                        return 'User names can not consist entirely of numbers.';
+                    }
+                },
+                password: [/^[\S]{6,12}$/, "Password must be 6 to 12 bits and no spaces."],
+                phone: [
+                    regPhone,
+                    'The entered mobile number format is incorrect, please re-enter.'
+                ],
+                comPassword: function (val) {
+                    let password = $("#password").val();
+                    return password == val ? '' : "The password entered for the second time is different from the first time.";
+                },
+                emali: [
+                    regEmail,
+                    'Incorrect mailbox format entered.'
+                ]
+            });
+
+            form.on("submit(login)", function (data) {
+                $.post('/register/ajaxreg', data.field, function (out) {
+                    if (out.status == 0) {
+                        layer.alert('Successful registration, go to login.', { icon: 1 }, function (index) {
+                            window.location = "./login.html";
+                        });
+                    } else {
+                        layer.msg(out.message);
+                    }
+
+                }, "json");
+                return false;
+            });
+
+            /**
+             * 表单input组件单击时
+             */
+            $("#login .input-item .layui-input").click(function (e) {
+                e.stopPropagation();
+                $(this).addClass("layui-input-focus").find(".layui-input").focus();
+            });
+
+            /**
+             * 表单input组件获取焦点时
+             */
+            $("#login .layui-form-item .layui-input").focus(function () {
+                $(this).parent().addClass("layui-input-focus");
+            });
+
+            /**
+             * 表单input组件失去焦点时
+             */
+            $("#login .layui-form-item .layui-input").blur(function () {
+                $(this).parent().removeClass("layui-input-focus");
+                if ($(this).val() != "") {
+                    $(this).parent().addClass("layui-input-active");
+                } else {
+                    $(this).parent().removeClass("layui-input-active");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
